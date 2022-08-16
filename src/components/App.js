@@ -1,27 +1,21 @@
-import {useEffect, useState} from 'react';
-import{BrowserRouter as Router,Routes,Route} from 'react-router-dom';
-import {getPosts} from '../api';
-import {Home,Login} from '../pages'
+import{BrowserRouter as Router,Routes,Route,Navigate} from 'react-router-dom';
+import {Home,Login,Signup,Settings,UserProfile} from '../pages'
 import {Navbar,Loader} from './index';
+import {useAuth} from '../hooks'
+
+function PrivateRoute({children}){
+  const auth=useAuth();
+  if(auth.user){
+    return children;
+  }
+  return <Navigate to="/login"/>
+}
 
 
 function App() {
-  const[posts,setPosts]=useState([]);
-  const[loading,setLoading]=useState(true);
+  const auth=useAuth();
 
-  useEffect(()=>{
-      const fetchPosts=async()=>{ // can use async in useeffect
-        const response=await getPosts();
-        if(response.success){
-          setPosts(response.data.posts); // send posts to Home Page
-        }
-         setLoading(false); // loading ball on page
-      }
-    fetchPosts();
-  },[])
-
-
-  if(loading){
+  if(auth.loading){
     return(
       <Loader />
     )
@@ -37,14 +31,14 @@ function App() {
     <Router>
     <Navbar />
       <Routes>
-        <Route exact path='/' element={<Home posts={posts} />}>  </Route>
+        <Route exact path='/' element={<Home />}>  </Route>
         <Route exact path='/login' element={<Login />}>  </Route>
+        <Route exact path='/register' element={<Signup />}>  </Route>
+        <Route exact path='/settings' element={<PrivateRoute><Settings /></PrivateRoute>}></Route>
+        <Route exact path='/user/:userId' element={<PrivateRoute><UserProfile /></PrivateRoute>}></Route>
         <Route path="*" element={<Page404 />}>  </Route>
-
       </Routes>  
     </Router>
-    
-  
     
   );
 }

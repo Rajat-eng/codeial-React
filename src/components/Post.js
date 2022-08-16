@@ -1,60 +1,47 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-// import { useToasts } from 'react-toast-notifications';
-
-// import { createComment, toggleLike } from '../api';
-// import { usePosts } from '../hooks';
+import { notifyerror,notifysuccess } from '../utils';
+import { createComment, toggleLike } from '../api';
+import { usePosts } from '../hooks';
 import styles from '../styles/home.module.css';
 import { Comment } from './index';
 
 const Post = ({ post }) => {
-  // const [comment, setComment] = useState('');
-  // const [creatingComment, setCreatingComment] = useState(false);
-  // const posts = usePosts();
-  // const { addToast } = useToasts();
+  const [comment, setComment] = useState('');
+  const posts = usePosts();
+  
 
-  // const handleAddComment = async (e) => {
-  //   if (e.key === 'Enter') {
-  //     setCreatingComment(true);
+  const handleAddComment = async (e) => {
+    if (e.key === 'Enter') {
+     
 
-  //     const response = await createComment(comment, post._id);
+      const response = await createComment(comment, post._id);
 
-  //     if (response.success) {
-  //       setComment('');
-  //       posts.addComment(response.data.comment, post._id);
-  //       addToast('Comment created successfully!', {
-  //         appearance: 'success',
-  //       });
-  //     } else {
-  //       addToast(response.message, {
-  //         appearance: 'error',
-  //       });
-  //     }
+      if (response.success) {
+        setComment('');
+        posts.addComment(response.data.comment, post._id);
+        notifysuccess('comment added')
+      } else {
+        notifyerror('cant add comment')
+      }
 
-  //     setCreatingComment(false);
-  //   }
-  // };
+    }
+  };
 
-  // const handlePostLikeClick = async () => {
-  //   const response = await toggleLike(post._id, 'Post');
+  const handlePostLikeClick = async () => {
+    const response = await toggleLike(post._id, 'Post');
 
-  //   if (response.success) {
-  //     if (response.data.deleted) {
-  //       addToast('Like removed successfully!', {
-  //         appearance: 'success',
-  //       });
-  //     } else {
-  //       addToast('Like added successfully!', {
-  //         appearance: 'success',
-  //       });
-  //     }
-  //   } else {
-  //     addToast(response.message, {
-  //       appearance: 'error',
-  //     });
-  //   }
-  // };
+    if (response.success) {
+      if (response.data.deleted) {
+        notifysuccess('Like removed successfully!')
+      } else {
+        notifysuccess('Like added successfully!');
+      }
+    } else {
+      return notifyerror(response.message);
+    }
+  };
 
   return (
     <div className={styles.postWrapper} key={post._id}>
@@ -65,7 +52,7 @@ const Post = ({ post }) => {
             alt="user-pic"
           />
           <div>
-            {/* { <Link
+            { <Link
               to={{
                 pathname: `/user/${post.user._id}`,
                 state: {
@@ -75,7 +62,7 @@ const Post = ({ post }) => {
               className={styles.postAuthor}
             >
               {post.user.name}
-            </Link> } */}
+            </Link> }
             <span className={styles.postTime}>a minute ago</span>
           </div>
         </div>
@@ -83,12 +70,12 @@ const Post = ({ post }) => {
 
         <div className={styles.postActions}>
           <div className={styles.postLike}>
-            {/* <button onClick={handlePostLikeClick}>
+            <button onClick={handlePostLikeClick}>
               <img
-                src="https://cdn-icons.flaticon.com/png/512/880/premium/880452.png?token=exp=1660398022~hmac=cbdf12b2b8077559e3a49a0e7de81e6d"
+                src="https://cdn-icons-png.flaticon.com/512/833/833472.png"
                 alt="likes-icon"
               />
-            </button> */}
+            </button>
             <span>{post.likes.length}</span>
           </div>
 
@@ -101,12 +88,12 @@ const Post = ({ post }) => {
           </div>
         </div>
         <div className={styles.postCommentBox}>
-          {/* <input
+          <input
             placeholder="Start typing a comment"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             onKeyDown={handleAddComment}
-          /> */}
+          />
         </div>
 
         <div className={styles.postCommentsList}>

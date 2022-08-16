@@ -1,40 +1,40 @@
 import { useState } from 'react';
-// import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { notifyerror,notifysuccess } from '../utils';
-// import { useAuth } from '../hooks';
+import { useAuth } from '../hooks';
 import styles from '../styles/login.module.css';
-import {login} from '../api';
+import { fetchUserFriends } from '../api';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
-  
-  //const auth = useAuth();
+  const auth = useAuth();
+  //console.log('auth',auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoggingIn(true);
-
+   
     if (!email || !password) {
-      return notifyerror("please enter bothe email and password")
+      return notifyerror("please enter both email and password")
     }
 
-    // const response = await auth.login(email, password);
-    const response = await login(email, password);
-
+    const response = await auth.login(email, password);   
     if (response.success) {
-        notifysuccess('successfully logged in')
+      notifysuccess('successfully logged in'); 
     } else {
-        notifyerror('unable to preocess request')
+      notifyerror('Wrong inputs | Server error')
     }
 
     setLoggingIn(false);
   };
-
-  // if (auth.user) {
-  //   return <Redirect to="/" />;
-  // }
+   
+  
+  if (auth.user) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <form className={styles.loginForm} onSubmit={handleSubmit}>

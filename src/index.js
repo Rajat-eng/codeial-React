@@ -6,13 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './providers/AuthProvider';
+import { PostsProvider } from './providers/PostsProvider';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
       <AuthProvider>
-        <App />
+        <PostsProvider>
+          <App />
+        </PostsProvider>
       </AuthProvider>
       <ToastContainer />
   </React.StrictMode>
